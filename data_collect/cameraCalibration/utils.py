@@ -102,9 +102,15 @@ def sig_calibration(flag,camera_):
           'tot_error', type(tot_error))
     print('------------------------------------')
 
+    calibration_dir = os.path.dirname(os.path.realpath(__file__)).replace('cameraCalibration','static\\res_pictures\\result\\calibration\\')
+    numOfcali = 0
+    dirList = os.listdir(calibration_dir)
+    for i in dirList:
+        if i.endswith(".xml"):
+            numOfcali+=1
+    numOfcali = numOfcali//3
 
-
-    calibration_path = os.path.dirname(os.path.realpath(__file__)).replace('cameraCalibration','static\\res_pictures\\result\\calibration\\' +flag+'_'+ camera_ + '_' + 'single_calibration.xml')  ##单目标定结果xml文件存放位置
+    calibration_path = calibration_dir+flag+'_'+ camera_ + '_' + 'single_calibration_'+str(numOfcali)+'.xml'  ##单目标定结果xml文件存放位置
     #calibration_path = '/home/monkiki/PycharmProjects/try/'+camera_ + '_' + 'single_calibration.xml'
     single_calibration_fs = cv2.FileStorage(calibration_path, cv2.FileStorage_WRITE)  ##记住这里要用绝对路径！！！！
     single_calibration_fs.write('ret', ret)
@@ -288,8 +294,15 @@ def stereo_Calibration(flag):
                                                          P2, gray_l.shape[::-1],
                                                          cv2.INTER_NEAREST)
 
-    calibration_path = os.path.dirname(os.path.realpath(__file__)).replace('cameraCalibration',
-                                                                           'static\\res_pictures\\result\\calibration\\'+flag+'_'+'stereo_calibration.xml')
+    calibration_dir = os.path.dirname(os.path.realpath(__file__)).replace('cameraCalibration',
+                                                                          'static\\res_pictures\\result\\calibration\\')
+    numOfcali = 0
+    dirList = os.listdir(calibration_dir)
+    for i in dirList:
+        if i.endswith(".xml"):
+            numOfcali += 1
+    numOfcali = numOfcali // 3
+    calibration_path = calibration_dir+flag+'_'+'stereo_calibration_'+str(numOfcali)+'.xml'
 
     stereo_calibration_fs = cv2.FileStorage(
         calibration_path,
