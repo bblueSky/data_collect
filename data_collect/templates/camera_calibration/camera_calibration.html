@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+{%  extends "publicNav.html" %}
+<html lang="en">
+<head>
+    {% block head_meta %}
+    <meta charset="UTF-8">
+    {% block  title %}<title>大型细长筒类构件位姿原位测量系统</title>{% endblock %}
+    {% endblock %}
+    {% block css %}
+    <link href="../static/css/test_css.css" rel="stylesheet">
+    <link href="../static/css/font-awesome.css" rel="stylesheet">
+    <link href="../static/css/ionicons.css" rel="stylesheet">
+    <link href="../static/css/perfect-scrollbar.css" rel="stylesheet">
+    <link href="../static/css/rickshaw.min.css" rel="stylesheet">
+    {% endblock %}
+    {% block my_css %}
+    <link rel="stylesheet" href="../static/css/starlight.css">
+    {% endblock %}
+</head>
+    {% block header %}
+    <!-- ########## START: LEFT PANEL ########## -->
+
+    <!-- ########## END: LEFT PANEL ########## -->
+
+    <!-- ########## START: HEAD PANEL ########## -->
+
+    <!-- ########## END: HEAD PANEL ########## -->
+
+    {% endblock %}
+    <!-- ########## START: MAIN PANEL ########## -->
+    {% block main %}
+    <div class="sl-mainpanel">
+        <div style="">
+            <div class="container" style="display:flex;flex:1;padding-right:0px;padding-left:0px;background:white">
+                <div class="card container" style="margin-left:0px;width:100%">
+                    <div style="height:20px"></div>
+                    <span>
+                        <input type="radio" name="AorB" id="selectcali_A" value="cali_A"><label style="font-size:10px;color:black">A端相机组标定&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectcali_B" value="cali_B"><label style="font-size:10px;color:black">B端相机组标定&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectA" value="A"><label style="font-size:10px;color:black">A端相机组拍照&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectB" value="B"><label style="font-size:10px;color:black">B端相机组拍照&nbsp;&nbsp;</label>
+                    </span>
+                </div>
+            </div>
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;height:400px">
+                    <span>
+                    <div style="float:left;width:120px">
+                        <div style="height:45px">
+                            <button style="font-size:9px;width:110px;height:40px" type="button" id="takePhotos" onclick="take_pic()"><i class="fa fa-camera"></i> 拍摄</button><!--这里按钮在拍摄与保存之间切换-->
+                        </div>
+                        <div style="height:45px">
+                            <button style="font-size:9px;width:110px;height:40px" type="button" id="savePic" onclick="save_pic()" disabled="disabled"><i class="fa fa-floppy-o"></i> 保存</button><!--我放弃了5555-->
+                        </div>
+                        <div style="height:45px">
+                            <button style="font-size:10px;width:110px;height:40px" type="button" id="deleteAll" onclick="confirmDelete2()"><i class="fa fa-trash"></i> 删除所有</button>
+                        </div>
+                    </div>
+                    <div style="float:left">
+                      <table border="3" style="border:#5b93d3"><tr>
+                            <td><img name= 'leftcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="left_img"></td>
+                            <td><img name='rightcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="right_img"></td>
+                      </tr></table>
+                    </div>
+                    </span>
+                    <div align="center">
+                        <p align="center" id="numPic" style="font-size:9px;color:black">拍照后点击“保存”即可存入标定图库</p><!--这里更换文本-->
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;height:290px">
+                    <span>
+                        <div style="float:left;width:120px">
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="A_stereoCalibration" onclick="confirmDelete3()"><i class="fa fa-binoculars"></i> A端立体标定</button>
+                            </div>
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="B_stereoCalibration" onclick="confirmDelete4()"><i class="fa fa-binoculars"></i> B端立体标定</button>
+                            </div>
+                        </div>
+                        <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px;float:left">
+                            <div style="display:flex">
+                                <div style="width:300px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ltime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;内参矩阵:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx0" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx1" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;畸变参数:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ldist" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定偏差:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lterror" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                                <div style="width:266px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定时长:</p><input type="text" id="rtime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;内参矩阵:</p><input type="text" id="rmtx0" style="font-size:9px;margin-left:0px;width:270px">
+                                    <input type="text" id="rmtx1" style="font-size:9px;margin-left:0px;width:270px">
+                                    <input type="text" id="rmtx2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;畸变参数:</p><input type="text" id="rdist" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定偏差:</p><input type="text" id="rterror" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                                <div style="width:300px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;双目标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="stime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R0" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R1" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="T" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                            </div>
+                            <div style="height:9px"></div>
+                            <div style="height:9px"></div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div style="height:15px"></div>
+        <div style="">
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;width:100%;height:570px">
+                    <div style="height:50px"></div>
+                    <!--这里加激光跟踪仪数显input-->
+                    <div style="display:flex">
+                        <div style="width:120px">
+                            <button style="font-size:9px;width:110px;height:40px;margin-left:0px" type="button" id="insertComplete" onclick="insertComplete()"><i class="fa fa-check"></i> 录入完成</button>
+                        </div>
+                        <div style="border:1px solid #1255a2">
+                            <div style="border:1px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板A测量数据手动录入</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球1:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="A1X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="A1Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="A1Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球2:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="A2X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="A2Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="A2Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球3:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="A3X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="A3Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="A3Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                            <div style="border:1px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板B测量数据手动录入</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球1:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="B1X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="B1Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="B1Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球2:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="B2X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="B2Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="B2Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球3:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="B3X" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="B3Y" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="B3Z" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                            <div style="border:1px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板A的LT转换数据手动录入</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APO:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="AOX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="AOY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="AOZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APH:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="AHX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="AHY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="AHZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APW:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="AWX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="AWY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="AWZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                            <div style="border:1px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板B的LT转换数据手动录入</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球BPO:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BOX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BOY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BOZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球BPH:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BHX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BHY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BHZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球BPW:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BWX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BWY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BWZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size:9px;margin:0;color:black">数显部分不用填</p>
+                </div>
+            </div>
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;width:100%;height:420px">
+                    <div style="">
+                        <div style="width:120px"></div>
+                        <div style="display:flex">
+                            <div style="width:120px"></div>
+                            <div style="border:2px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板A算法转换数显</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APO:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="APOX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="APOY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="APOZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APH:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="APHX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="APHY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="APHZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APW:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="APWX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="APWY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="APWZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex">
+                            <div style="width:120px"></div>
+                            <div style="border:2px solid #1255a2;height:120px;width:896px;background:#f2f2f2">
+                                <p style="font-size:9px;margin:0;color:black">基准板B算法转换数显</p>
+                                <div style="height:12px"></div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APO:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BPOX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BPOY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BPOZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APH:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BPHX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BPHY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BPHZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                                <div style="display:flex">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靶球APW:&nbsp;&nbsp;&nbsp;&nbsp;X:</p><input type="text" id="BPWX" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y:</p><input type="text" id="BPWY" style="font-size:9px;margin-left:0px;width:200px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BPWZ" style="font-size:9px;margin-left:0px;width:200px">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex;border:2px solid #1255a2;background:#f2f2f2">
+                            <div style="width:200px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A端靶球1全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="APO" style="font-size:9px;margin-left:0px;width:170px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A端靶球2全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="APH" style="font-size:9px;margin-left:0px;width:170px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A端靶球3全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="APW" style="font-size:9px;margin-left:0px;width:170px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B端靶球1全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="BPO" style="font-size:9px;margin-left:0px;width:170px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B端靶球2全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="BPH" style="font-size:9px;margin-left:0px;width:170px">
+                                <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B端靶球3全局坐标:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="BPW" style="font-size:9px;margin-left:0px;width:170px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height:40px"></div>
+        <div>
+            <footer class="sl-footer" style="background-color:#044b8c">
+            <div>
+                <p align="center" style="color:white;margin-bottom: 0px;">Copyright &copy; 2018. <strong>Starlight</strong>. All Rights Reserved. Made by BUAA <strong>Laboratory of Digital Design and Manufacturing</strong>.</p>
+            </div>
+            </footer>
+        </div>
+    </div>
+
+    {% endblock %}
+    {% block js %}
+
+    {% endblock %}
+
+
+    {% block write_js %}
+    <script>
+        function  take_pic(){
+            var flag = $('input[type=radio][name=AorB]:checked').val();
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/take_pic",
+                dataType: 'json',
+                success:function(res){
+                    //window.location.reload();
+                    alert('拍照完成');
+                    document.getElementById("savePic").removeAttribute("disabled");
+                    time = res["key"];
+                    //window.location.reload();
+                    document.getElementById("numPic").innerHTML='当前照片组标签为'+flag+'端'+time;
+                    document.getElementById("left_img").src="/static/res_pictures/temp/left.jpg";
+                    document.getElementById("right_img").src="/static/res_pictures/temp/right.jpg";
+                },
+                error: function (res) {
+                      alert('失败')
+                }
+            })
+        }
+    </script>
+    <script>
+        function save_pic(){
+            var flag = $('input[type=radio][name=AorB]:checked').val()
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag,'mydata1':time},
+                url:"/cameraCalibration/save_pic",
+                dataType: 'json',
+                success:function(res){
+                    alert("成功以"+"'"+time+"'"+"为标签保存至"+flag+"端图库")
+                    document.getElementById("savePic").setAttribute("disabled",true);
+                }
+            })
+        }
+    </script>
+    <script>
+        function confirmDelete2(){
+            var flag = $('input[type=radio][name=AorB]:checked').val()
+            var r = confirm("确定要删除"+flag+"端标定图库中所有照片吗？")
+		    if (r == true) {
+		        deleteAll()
+		    }
+		    else {
+		    }
+        }
+        function deleteAll(){
+            var flag = $('input[type=radio][name=AorB]:checked').val()
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/deleteAll",
+                dataType: 'json',
+                success:function(res){
+                    alert(flag+"图库中所有照片已成功被删除！")
+                    document.getElementById("left_img").src="/static/picture/nopic.png";
+                    document.getElementById("right_img").src="/static/picture/nopic.png";
+                }
+            })
+        }
+    </script>
+    <script>
+        function confirmDelete3(){
+            var r = confirm("确定要对A端双目相机进行标定吗？");
+		    if (r == true) {
+		        A_stereoCalibration();
+		    }
+		    else {
+		    }
+        }
+        function A_stereoCalibration(){
+            var flag = 'A';
+            document.getElementById("numPic").innerHTML='正在进行标定运算！请勿进行其他操作！'
+            document.getElementById("takePhotos").setAttribute("disabled",true);
+            document.getElementById("deleteAll").setAttribute("disabled",true);
+            document.getElementById("A_stereoCalibration").setAttribute("disabled",true);
+            document.getElementById("B_stereoCalibration").setAttribute("disabled",true);
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/stereoCalibration",
+                dataType: 'json',
+                success:function(res){
+                    alert(flag+"端双目相机已标定完成！")
+                    document.getElementById("left_img").src="/static/res_pictures/temp/noImage.png";
+                    document.getElementById("right_img").src="/static/res_pictures/temp/noImage.png";
+                    document.getElementById("takePhotos").removeAttribute("disabled");
+                    document.getElementById("deleteAll").removeAttribute("disabled");
+                    document.getElementById("A_stereoCalibration").removeAttribute("disabled");
+                    document.getElementById("B_stereoCalibration").removeAttribute("disabled");
+                    document.getElementById("ltime").value=res["ltime"];
+                    document.getElementById("lmtx0").value=res["lmtx0"];
+                    document.getElementById("lmtx1").value=res["lmtx1"];
+                    document.getElementById("lmtx2").value=res["lmtx2"];
+                    document.getElementById("ldist").value=res["ldist"];
+                    document.getElementById("lterror").value=res["lterror"];
+
+                    document.getElementById("rtime").value=res["rtime"];
+                    document.getElementById("rmtx0").value=res["rmtx0"];
+                    document.getElementById("rmtx1").value=res["rmtx1"];
+                    document.getElementById("rmtx2").value=res["rmtx2"];
+                    document.getElementById("rdist").value=res["rdist"];
+                    document.getElementById("rterror").value=res["rterror"];
+
+                    document.getElementById("R0").value=res["R0"];
+                    document.getElementById("R1").value=res["R1"];
+                    document.getElementById("R2").value=res["R2"];
+                    document.getElementById("T").value=res["T"];
+                    document.getElementById("stime").value=res["stime"];
+                }
+            })
+        }
+    </script>
+    <script>
+        function confirmDelete4(){
+            var r = confirm("确定要对B端双目相机进行标定吗？");
+		    if (r == true) {
+		        B_stereoCalibration();
+		    }
+		    else {
+		    }
+        }
+        function B_stereoCalibration(){
+            var flag = 'B';
+            document.getElementById("numPic").innerHTML='正在进行标定运算！请勿进行其他操作！'
+            document.getElementById("takePhotos").setAttribute("disabled",true);
+            document.getElementById("deleteAll").setAttribute("disabled",true);
+            document.getElementById("A_stereoCalibration").setAttribute("disabled",true);
+            document.getElementById("B_stereoCalibration").setAttribute("disabled",true);
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/stereoCalibration",
+                dataType: 'json',
+                success:function(res){
+                    alert(flag+"端双目相机已标定完成！")
+                    document.getElementById("left_img").src="/static/res_pictures/temp/noImage.png";
+                    document.getElementById("right_img").src="/static/res_pictures/temp/noImage.png";
+                    document.getElementById("takePhotos").removeAttribute("disabled");
+                    document.getElementById("deleteAll").removeAttribute("disabled");
+                    document.getElementById("A_stereoCalibration").removeAttribute("disabled");
+                    document.getElementById("B_stereoCalibration").removeAttribute("disabled");
+                    document.getElementById("ltime").value=res["ltime"];
+                    document.getElementById("lmtx0").value=res["lmtx0"];
+                    document.getElementById("lmtx1").value=res["lmtx1"];
+                    document.getElementById("lmtx2").value=res["lmtx2"];
+                    document.getElementById("ldist").value=res["ldist"];
+                    document.getElementById("lterror").value=res["lterror"];
+
+                    document.getElementById("rtime").value=res["rtime"];
+                    document.getElementById("rmtx0").value=res["rmtx0"];
+                    document.getElementById("rmtx1").value=res["rmtx1"];
+                    document.getElementById("rmtx2").value=res["rmtx2"];
+                    document.getElementById("rdist").value=res["rdist"];
+                    document.getElementById("rterror").value=res["rterror"];
+
+                    document.getElementById("R0").value=res["R0"];
+                    document.getElementById("R1").value=res["R1"];
+                    document.getElementById("R2").value=res["R2"];
+                    document.getElementById("T").value=res["T"];
+                    document.getElementById("stime").value=res["stime"];
+                }
+            })
+        }
+    </script>
+    <script>
+        function laserTrackerFile(){
+            var file = document.getElementById("File1");
+            file.click();
+        }
+        function inputComplete(){
+            console.log('打印场景API',THREE.Scene);
+            var flag = $('input[type=radio][name=AorB]:checked').val();
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/inputComplete",
+                dataType: 'json',
+                success:function(res){
+                    alert("数据导入完成！")
+                    document.getElementById("A1X").value = res["A1X"];
+                    document.getElementById("A1Y").value = res["A1Y"];
+                    document.getElementById("A1Z").value = res["A1Z"];
+                    document.getElementById("A2X").value = res["A2X"];
+                    document.getElementById("A2Y").value = res["A2Y"];
+                    document.getElementById("A2Z").value = res["A2Z"];
+                    document.getElementById("A3X").value = res["A3X"];
+                    document.getElementById("A3Y").value = res["A3Y"];
+                    document.getElementById("A3Z").value = res["A3Z"];
+                    document.getElementById("B1X").value = res["B1X"];
+                    document.getElementById("B1Y").value = res["B1Y"];
+                    document.getElementById("B1Z").value = res["B1Z"];
+                    document.getElementById("B2X").value = res["B2X"];
+                    document.getElementById("B2Y").value = res["B2Y"];
+                    document.getElementById("B2Z").value = res["B2Z"];
+                    document.getElementById("B3X").value = res["B3X"];
+                    document.getElementById("B3Y").value = res["B3Y"];
+                    document.getElementById("B3Z").value = res["B3Z"];
+
+                    document.getElementById("APO").value=res["APO"];
+                    document.getElementById("APH").value=res["APH"];
+                    document.getElementById("APW").value=res["APW"];
+                    document.getElementById("BPO").value=res["BPO"];
+                    document.getElementById("BPH").value=res["BPH"];
+                    document.getElementById("BPW").value=res["BPW"];
+                    document.getElementById("APOs").value=res["APOs"];
+                    document.getElementById("APHs").value=res["APHs"];
+                    document.getElementById("APWs").value=res["APWs"];
+                    document.getElementById("BPOs").value=res["BPOs"];
+                    document.getElementById("BPHs").value=res["BPHs"];
+                    document.getElementById("BPWs").value=res["BPWs"];
+                }
+            })
+        }
+    </script>
+    <script>
+        function insertComplete(){
+            var A1X = document.getElementById("A1X").value;
+            var A1Y = document.getElementById("A1Y").value;
+            var A1Z = document.getElementById("A1Z").value;
+            var A2X = document.getElementById("A2X").value;
+            var A2Y = document.getElementById("A2Y").value;
+            var A2Z = document.getElementById("A2Z").value;
+            var A3X = document.getElementById("A3X").value;
+            var A3Y = document.getElementById("A3Y").value;
+            var A3Z = document.getElementById("A3Z").value;
+            var B1X = document.getElementById("B1X").value;
+            var B1Y = document.getElementById("B1Y").value;
+            var B1Z = document.getElementById("B1Z").value;
+            var B2X = document.getElementById("B2X").value;
+            var B2Y = document.getElementById("B2Y").value;
+            var B2Z = document.getElementById("B2Z").value;
+            var B3X = document.getElementById("B3X").value;
+            var B3Y = document.getElementById("B3Y").value;
+            var B3Z = document.getElementById("B3Z").value;
+            $.ajax({
+                type:'GET',
+                data:{'A1X':A1X,'A1Y':A1Y,'A1Z':A1Z,'A2X':A2X,'A2Y':A2Y,'A2Z':A2Z,'A3X':A3X,'A3Y':A3Y,'A3Z':A3Z,'B1X':B1X,'B1Y':B1Y,'B1Z':B1Z,'B2X':B2X,'B2Y':B2Y,'B2Z':B2Z,'B3X':B3X,'B3Y':B3Y,'B3Z':B3Z},
+                url:"/cameraCalibration/insertComplete",
+                dataType: 'json',
+                success:function(res){
+                    alert("数据录入完成！");
+                    document.getElementById("APO").value=res["APO"];
+                    document.getElementById("APH").value=res["APH"];
+                    document.getElementById("APW").value=res["APW"];
+                    document.getElementById("BPO").value=res["BPO"];
+                    document.getElementById("BPH").value=res["BPH"];
+                    document.getElementById("BPW").value=res["BPW"];
+                    document.getElementById("APOs").value=res["APOs"];
+                    document.getElementById("APHs").value=res["APHs"];
+                    document.getElementById("APWs").value=res["APWs"];
+                    document.getElementById("BPOs").value=res["BPOs"];
+                    document.getElementById("BPHs").value=res["BPHs"];
+                    document.getElementById("BPWs").value=res["BPWs"];
+                },
+                error: function (res) {
+                      alert('失败')
+                }
+            })
+        }
+    </script>
+    <script>
+        function constructMeasureField(){
+            var flag = $('input[type=radio][name=AorB]:checked').val();
+            $.ajax({
+                type:'GET',
+                data:{},
+                url:"/cameraCalibration/constructMeasureField",
+                dataType: 'json',
+                success:function(res){
+                    alert("测量场构建完成！");
+                    document.getElementById("info").innerHTML="测量场已构建！可以进行后续测量操作！";
+                    document.getElementById("AcameraTime").innerHTML="A端双目相机最新标定日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+res["AcameraTime"];
+                    document.getElementById("BcameraTime").innerHTML="B端双目相机最新标定日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+res["BcameraTime"];
+                    document.getElementById("globalTime").innerHTML="激光跟踪仪数据最新导入日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+res["globalTime"];
+                },
+                error: function (res) {
+                      alert('缺少标定数据，请先完成双目相机标定与激光跟踪仪录入！')
+                      document.getElementById("info").innerHTML="缺少标定数据！无法构建测量场！";
+                }
+            })
+        }
+    </script>
+    <script src="/static/js/three.js"></script>
+    <script src="/static/js/OrbitControls.js"></script>
+    <script>
+        /**
+        * 创建场景对象Scene
+        */
+        var scene = new THREE.Scene();
+        var axes = new THREE.AxisHelper(200);
+        var geometry1 = new THREE.BoxGeometry(30, 30, 2); //创建一个立方体几何对象Geometry
+        var geometry2 = new THREE.BoxGeometry(30, 30, 2); //创建一个立方体几何对象Geometry
+        var ground = new THREE.BoxGeometry(300, 5, 600); //创建一个立方体几何对象Geometry
+        var material1 = new THREE.MeshLambertMaterial({color: 0xF4A460}); //材质对象Material
+        var material2 = new THREE.MeshLambertMaterial({color: 0xf8f8f8}); //材质对象Material
+        var mesh1 = new THREE.Mesh(geometry1, material1); //网格模型对象Mesh
+        var mesh2 = new THREE.Mesh(geometry2, material1); //网格模型对象Mesh
+        var meshg = new THREE.Mesh(ground, material2);
+        meshg.position.y = -50;
+        scene.add(axes);
+        scene.add(mesh1); //网格模型添加到场景中
+        scene.add(meshg);
+        /**
+        * 光源设置
+        */
+        //点光源
+        var point = new THREE.PointLight(0xffffff);
+        point.position.set(300, 200, 100); //点光源位置
+        scene.add(point); //点光源添加到场景中
+        //环境光
+        var ambient = new THREE.AmbientLight(0x444444);
+        scene.add(ambient);
+        console.log(scene)
+        console.log(scene.children)
+        /**
+        * 相机设置
+        */
+        var width = 375; //窗口宽度
+        var height = 245; //窗口高度
+        var k = width / height; //窗口宽高比
+        var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+        //创建相机对象
+        var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+        camera.position.set(200, 300, 200); //设置相机位置
+        camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+        /**
+        * 创建渲染器对象
+        */
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height);//设置渲染区域尺寸
+        renderer.setClearColor(0xCAE1FF, 1); //设置背景颜色
+        container = document.getElementById("targetBallCoordinates");
+        container.appendChild(renderer.domElement); //body元素中插入canvas对象
+        //执行渲染操作   指定场景、相机作为参数
+        function render(){
+            renderer.render(scene, camera);
+        }
+        render();
+        var controls = new THREE.OrbitControls(camera,renderer.domElement);//创建控件对象
+        controls.addEventListener('change', render);//监听鼠标、键盘事件
+    </script>
+    <script>
+        /**
+        * 创建场景对象Scene
+        */
+        var scene2 = new THREE.Scene();
+        var axes2 = new THREE.AxisHelper(500);
+        axes2.position.set(-130,130,-20)
+        axes2.rotateX(Math.PI);
+        var geometry1 = new THREE.BoxGeometry(300, 300, 20);
+        var material1 = new THREE.MeshLambertMaterial({color: 0xF4A460}); //材质对象Material
+        var mesh1 = new THREE.Mesh(geometry1, material1); //网格模型对象Mesh
+        scene2.add(mesh1); //网格模型添加到场景中
+        scene2.add(axes2)
+        /**
+        * 光源设置
+        */
+        //点光源
+        var point2 = new THREE.PointLight(0xffffff);
+        point2.position.set(300, 200,-100); //点光源位置
+        scene2.add(point2); //点光源添加到场景中
+        //环境光
+        var ambient2 = new THREE.AmbientLight(0x444444);
+        scene2.add(ambient2);
+        console.log(scene2)
+        console.log(scene2.children)
+        /**
+        * 相机设置
+        */
+        var width = 305; //窗口宽度
+        var height = 265; //窗口高度
+        var k = width / height; //窗口宽高比
+        var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+        //创建相机对象
+        var camera2 = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+        camera2.position.set(0, 0, -300); //设置相机位置
+        camera2.lookAt(scene2.position); //设置相机方向(指向的场景对象)
+        /**
+        * 创建渲染器对象
+        */
+        var renderer2 = new THREE.WebGLRenderer();
+        renderer2.setSize(width, height);//设置渲染区域尺寸
+        renderer2.setClearColor(0xCAE1FF, 1); //设置背景颜色
+        container2 = document.getElementById("pad");
+        container2.appendChild(renderer2.domElement); //body元素中插入canvas对象
+        //执行渲染操作   指定场景、相机作为参数
+        function render2(){
+            renderer2.render(scene2, camera2);
+        }
+        render2();
+        var controls2 = new THREE.OrbitControls(camera2,renderer2.domElement);//创建控件对象
+        controls2.addEventListener('change', render2);//监听鼠标、键盘事件
+    </script>
+    {% endblock %}
+    <!-- ######### END: MAIN PANEL ########## -->
+
+    {% block my_js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/perfect-scrollbar.jquery.js"></script>
+    <script src="/static/js/jquery.sparkline.min.js"></script>
+    <script src="/static/js/d3.js"></script>
+    <script src="/static/js/rickshaw.min.js"></script>
+    <script src="/static/js/chart.js"></script>
+    <script src="/static/js/jquery.flot.js"></script>
+    <script src="/static/js/jquery.flot.pie.js"></script>
+    <script src="/static/js/jquery.flot.resize.js"></script>
+    <script src="/static/js/jquery.flot.spline.js"></script>
+    <script src="/static/js/starlight.js"></script>
+    <script src="/static/js/resizesensor.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+
+    {% endblock %}
+</body>
+</html>
