@@ -4,7 +4,7 @@
 <head>
     {% block head_meta %}
     <meta charset="UTF-8">
-    {% block  title %}<title>大型细长筒类构件位姿原位测量系统</title>{% endblock %}
+    {% block  title %}<title>测量系统数据采集软件</title>{% endblock %}
     {% endblock %}
     {% block css %}
     <link href="../static/css/test_css.css" rel="stylesheet">
@@ -30,89 +30,6 @@
     <!-- ########## START: MAIN PANEL ########## -->
     {% block main %}
     <div class="sl-mainpanel">
-        <div style="">
-            <div class="container" style="display:flex;flex:1;padding-right:0px;padding-left:0px;background:white">
-                <div class="card container" style="margin-left:0px;width:100%">
-                    <div style="height:20px"></div>
-                    <span>
-                        <input type="radio" name="AorB" id="selectcali_A" value="cali_A"><label style="font-size:10px;color:black">A端相机组标定&nbsp;&nbsp;</label>
-                        <input type="radio" name="AorB" id="selectcali_B" value="cali_B"><label style="font-size:10px;color:black">B端相机组标定&nbsp;&nbsp;</label>
-                        <input type="radio" name="AorB" id="selectA" value="A"><label style="font-size:10px;color:black">A端相机组拍照&nbsp;&nbsp;</label>
-                        <input type="radio" name="AorB" id="selectB" value="B"><label style="font-size:10px;color:black">B端相机组拍照&nbsp;&nbsp;</label>
-                    </span>
-                </div>
-            </div>
-            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
-                <div class="card container" style="margin-left:0px;height:400px">
-                    <span>
-                    <div style="float:left;width:120px">
-                        <div style="height:45px">
-                            <button style="font-size:9px;width:110px;height:40px" type="button" id="takePhotos" onclick="take_pic()"><i class="fa fa-camera"></i> 拍摄</button><!--这里按钮在拍摄与保存之间切换-->
-                        </div>
-                        <div style="height:45px">
-                            <button style="font-size:9px;width:110px;height:40px" type="button" id="savePic" onclick="save_pic()" disabled="disabled"><i class="fa fa-floppy-o"></i> 保存</button><!--我放弃了5555-->
-                        </div>
-                        <div style="height:45px">
-                            <button style="font-size:10px;width:110px;height:40px" type="button" id="deleteAll" onclick="confirmDelete2()"><i class="fa fa-trash"></i> 删除所有</button>
-                        </div>
-                    </div>
-                    <div style="float:left">
-                      <table border="3" style="border:#5b93d3"><tr>
-                            <td><img name= 'leftcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="left_img"></td>
-                            <td><img name='rightcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="right_img"></td>
-                      </tr></table>
-                    </div>
-                    </span>
-                    <div align="center">
-                        <p align="center" id="numPic" style="font-size:9px;color:black">拍照后点击“保存”即可存入标定图库</p><!--这里更换文本-->
-                    </div>
-                </div>
-            </div>
-            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
-                <div class="card container" style="margin-left:0px;height:290px">
-                    <span>
-                        <div style="float:left;width:120px">
-                            <div style="height:45px">
-                                <button style="font-size:9px;width:110px;height:40px" type="button" id="A_stereoCalibration" onclick="confirmDelete3()"><i class="fa fa-binoculars"></i> A端立体标定</button>
-                            </div>
-                            <div style="height:45px">
-                                <button style="font-size:9px;width:110px;height:40px" type="button" id="B_stereoCalibration" onclick="confirmDelete4()"><i class="fa fa-binoculars"></i> B端立体标定</button>
-                            </div>
-                        </div>
-                        <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px;float:left">
-                            <div style="display:flex">
-                                <div style="width:300px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ltime" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;内参矩阵:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx0" style="font-size:9px;margin-left:0px;width:270px">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx1" style="font-size:9px;margin-left:0px;width:270px">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx2" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;畸变参数:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ldist" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定偏差:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lterror" style="font-size:9px;margin-left:0px;width:270px">
-                                </div>
-                                <div style="width:266px">
-                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定时长:</p><input type="text" id="rtime" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;内参矩阵:</p><input type="text" id="rmtx0" style="font-size:9px;margin-left:0px;width:270px">
-                                    <input type="text" id="rmtx1" style="font-size:9px;margin-left:0px;width:270px">
-                                    <input type="text" id="rmtx2" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;畸变参数:</p><input type="text" id="rdist" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定偏差:</p><input type="text" id="rterror" style="font-size:9px;margin-left:0px;width:270px">
-                                </div>
-                                <div style="width:300px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;双目标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="stime" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R0" style="font-size:9px;margin-left:0px;width:270px">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R1" style="font-size:9px;margin-left:0px;width:270px">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R2" style="font-size:9px;margin-left:0px;width:270px">
-                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="T" style="font-size:9px;margin-left:0px;width:270px">
-                                </div>
-                            </div>
-                            <div style="height:9px"></div>
-                            <div style="height:9px"></div>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div style="height:15px"></div>
         <div style="">
             <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
                 <div class="card container" style="margin-left:0px;width:100%;height:570px">
@@ -251,6 +168,120 @@
                                     <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Z:</p><input type="text" id="BPWZ" style="font-size:9px;margin-left:0px;width:200px">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height:15px"></div>
+        <div style="">
+            <div class="container" style="display:flex;flex:1;padding-right:0px;padding-left:0px;background:white">
+                <div class="card container" style="margin-left:0px;width:100%">
+                    <div style="height:20px"></div>
+                    <span>
+                        <input type="radio" name="AorB" id="selectcali_A" value="cali_A"><label style="font-size:10px;color:black">A端相机组标定&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectcali_B" value="cali_B"><label style="font-size:10px;color:black">B端相机组标定&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectA" value="A"><label style="font-size:10px;color:black">A端相机组拍照&nbsp;&nbsp;</label>
+                        <input type="radio" name="AorB" id="selectB" value="B"><label style="font-size:10px;color:black">B端相机组拍照&nbsp;&nbsp;</label>
+                    </span>
+                </div>
+            </div>
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;height:400px">
+                    <span>
+                    <div style="float:left;width:120px">
+                        <div style="height:45px">
+                            <button style="font-size:9px;width:110px;height:40px" type="button" id="takePhotos" onclick="take_pic()"><i class="fa fa-camera"></i> 拍摄</button><!--这里按钮在拍摄与保存之间切换-->
+                        </div>
+                        <div style="height:45px">
+                            <button style="font-size:9px;width:110px;height:40px" type="button" id="savePic" onclick="save_pic()" disabled="disabled"><i class="fa fa-floppy-o"></i> 保存</button><!--我放弃了5555-->
+                        </div>
+                        <div style="height:45px">
+                            <button style="font-size:9px;width:110px;height:40px" type="button" id="deleteAll" onclick="confirmDelete2()"><i class="fa fa-trash"></i> 删除所有</button>
+                        </div>
+                    </div>
+                    <div style="float:left">
+                      <table border="3" style="border:#5b93d3"><tr>
+                            <td><img name= 'leftcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="left_img"></td>
+                            <td><img name='rightcamera' src="/static/picture/nopic.png" alt="Pulpit rock" width="450" height="350" id="right_img"></td>
+                      </tr></table>
+                    </div>
+                    </span>
+                    <div align="center">
+                        <p align="center" id="numPic" style="font-size:9px;color:black">拍照后点击“保存”即可存入标定图库</p><!--这里更换文本-->
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="flex:1;padding-right:0px;padding-left:0px">
+                <div class="card container" style="margin-left:0px;height:590px">
+                    <span>
+                        <div style="float:left;width:120px">
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="A_stereoCalibration" onclick="confirmDelete3()"><i class="fa fa-binoculars"></i> A端立体标定</button>
+                            </div>
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="B_stereoCalibration" onclick="confirmDelete4()"><i class="fa fa-binoculars"></i> B端立体标定</button>
+                            </div>
+                        </div>
+                        <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px;float:left">
+                            <div style="display:flex">
+                                <div style="width:300px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ltime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;内参矩阵:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx0" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx1" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lmtx2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;畸变参数:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="ldist" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;&nbsp;标定偏差:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="lterror" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                                <div style="width:266px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定时长:</p><input type="text" id="rtime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;内参矩阵:</p><input type="text" id="rmtx0" style="font-size:9px;margin-left:0px;width:270px">
+                                    <input type="text" id="rmtx1" style="font-size:9px;margin-left:0px;width:270px">
+                                    <input type="text" id="rmtx2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;畸变参数:</p><input type="text" id="rdist" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">right&nbsp;&nbsp;标定偏差:</p><input type="text" id="rterror" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                                <div style="width:300px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;双目标定时长:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="stime" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R0" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R1" style="font-size:9px;margin-left:0px;width:270px">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="R2" style="font-size:9px;margin-left:0px;width:270px">
+                                    <p style="font-size:9px;margin:0;color:black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T:</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="T" style="font-size:9px;margin-left:0px;width:270px">
+                                </div>
+                            </div>
+                            <div style="height:9px"></div>
+                            <div style="height:9px"></div>
+                        </div>
+                    </span>
+                    <div style="height:40px"></div>
+                    <div>
+                        <span>
+                            <button type="button" id="updateList" style="font-size:9px;width:110px;height:40px" onclick="updateList1()"><i class="fa fa-refresh"></i> 更新列表</button>
+                            <label style="font-size:9px">&nbsp;&nbsp;</label>
+                            <select id="selectType" style="font-size:9px;background:rgba(0,0,0,0.08);width:250px;height:40px" onchange="selectType()">
+                                <option value ="0">请先点击左侧“更新列表”</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div style="height:10px"></div>
+                    <div style="display:flex">
+                        <div style="width:120px"></div>
+                        <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px">
+                            <div style="">
+                                <div style="width:300px;display:flex">
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">X:</p><input type="text" id="HoleX" style="font-size:9px;margin-left:0px;width:270px">
+                                    </div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">Y:</p><input type="text" id="HoleY" style="font-size:9px;margin-left:0px;width:270px">
+                                    </div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">Z:</p><input type="text" id="HoleZ" style="font-size:9px;margin-left:0px;width:270px">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height:9px"></div>
+                            <div style="height:9px"></div>
                         </div>
                     </div>
                 </div>
