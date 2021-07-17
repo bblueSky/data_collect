@@ -265,18 +265,64 @@
                     </div>
                     <div style="height:10px"></div>
                     <div style="display:flex">
-                        <div style="width:120px"></div>
+                        <div style="width:120px">
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="hole_insert" onclick="hole_insert()"><i class="fa fa-sign-in"></i> 录入</button>
+                            </div>
+                        </div>
                         <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px">
+                            <p style="font-size:9px;margin:0;color:black">孔类目标数据录入</p>
+                            <div style="height:12px"></div>
                             <div style="">
                                 <div style="width:300px;display:flex">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                     <div>
-                                        <p style="font-size:9px;margin:0;color:black">X:</p><input type="text" id="HoleX" style="font-size:9px;margin-left:0px;width:270px">
+                                        <p style="font-size:9px;margin:0;color:black">X:</p><input type="text" id="HoleX" style="font-size:9px;margin-left:0px;width:200px">
                                     </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     <div>
-                                        <p style="font-size:9px;margin:0;color:black">Y:</p><input type="text" id="HoleY" style="font-size:9px;margin-left:0px;width:270px">
+                                        <p style="font-size:9px;margin:0;color:black">Y:</p><input type="text" id="HoleY" style="font-size:9px;margin-left:0px;width:200px">
                                     </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     <div>
-                                        <p style="font-size:9px;margin:0;color:black">Z:</p><input type="text" id="HoleZ" style="font-size:9px;margin-left:0px;width:270px">
+                                        <p style="font-size:9px;margin:0;color:black">Z:</p><input type="text" id="HoleZ" style="font-size:9px;margin-left:0px;width:200px">
+                                    </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">已经录入的孔数量n:</p><input type="text" id="numH_inserted" style="font-size:9px;margin-left:0px;width:200px">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height:9px"></div>
+                            <div style="height:9px"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex">
+                        <div style="width:120px">
+                            <div style="height:45px">
+                                <button style="font-size:9px;width:110px;height:40px" type="button" id="target_insert" onclick="target_insert()"><i class="fa fa-sign-in"></i> 录入</button>
+                            </div>
+                        </div>
+                        <div style="border:2px solid #1255a2;background:#f2f2f2;width:900px">
+                            <p style="font-size:9px;margin:0;color:black">靶标类目标数据录入</p>
+                            <div style="height:12px"></div>
+                            <div style="">
+                                <div style="width:300px;display:flex">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">X:</p><input type="text" id="TargetX" style="font-size:9px;margin-left:0px;width:200px">
+                                    </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">Y:</p><input type="text" id="TargetY" style="font-size:9px;margin-left:0px;width:200px">
+                                    </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">Z:</p><input type="text" id="TargetZ" style="font-size:9px;margin-left:0px;width:200px">
+                                    </div>
+                                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    <div>
+                                        <p style="font-size:9px;margin:0;color:black">已经录入的标数量n:</p><input type="text" id="numT_inserted" style="font-size:9px;margin-left:0px;width:200px">
                                     </div>
                                 </div>
                             </div>
@@ -543,6 +589,102 @@
                       alert('失败')
                 }
             })
+        }
+    </script>
+    <script>
+        function updateList1(){
+            var flag = $('input[type=radio][name=AorB]:checked').val();
+            $("#selectType").html("");
+            $.ajax({
+                type:'GET',
+                data:{'mydata':flag},
+                url:"/cameraCalibration/updateList1",
+                dataType: 'json',
+                success:function(res){
+                    //console.log("第一步");
+                    var options = "<option value=0>请选择要录入数据的图像</option>";
+                    for (var key in res) {
+                        //console.log("第二步");
+                        options += "<option value='"+key+"'>"+res[key]+"</option>";
+                    }
+                    $("#selectType").append(options);
+                    //console.log("第三步");
+                    //window.location.reload();
+                    //alert('已选择'+type+'先验数据日志');
+
+                    //window.location.reload();
+
+                },
+                error: function (res) {
+                    alert('失败！')
+                }
+            });
+        }
+    </script>
+    <script>
+        function selectType(){
+            var type = $("#selectType").val();
+            var type1 = $("#selectType").find("option:selected").text();
+            $.ajax({
+                type:'GET',
+                data:{'mydata':type},
+                url:"/cameraCalibration/selectType",
+                dataType: 'json',
+                success:function(res){
+                    //window.location.reload();
+                    if(type==0){
+                        alert('误操作！请选择拍摄图像数据日志！')
+                    }
+                    else{
+                        alert('已选择'+type1+'拍摄图像日志数据日志');
+                    }
+
+                    //window.location.reload();
+                },
+                error: function (res) {
+                      alert('失败！')
+                }
+            })
+        }
+    </script>
+    <script>
+        function hole_insert(){
+            var HoleX = document.getElementById("HoleX").value;
+            var HoleY = document.getElementById("HoleY").value;
+            var HoleZ = document.getElementById("HoleZ").value;
+            var filename = $("#selectType").find("option:selected").text();
+            $.ajax({
+                type:'GET',
+                data:{'filename':filename,'HoleX':HoleX,'HoleY':HoleY,'HoleZ':HoleZ},
+                url:"/cameraCalibration/hole_insert",
+                dataType: 'json',
+                success:function(res){
+                    document.getElementById("numH_inserted").value = res["numH_inserted"];
+                },
+                error: function (res) {
+                    alert('失败！')
+                }
+            });
+        }
+    </script>
+    <script>
+        function target_insert(){
+            var TargetX = document.getElementById("TargetX").value;
+            var TargetY = document.getElementById("TargetY").value;
+            var TargetZ = document.getElementById("TargetZ").value;
+            var filename = $("#selectType").find("option:selected").text();
+            $.ajax({
+                type:'GET',
+                data:{'filename':filename,'TargetX':TargetX,'TargetY':TargetY,'TargetZ':TargetZ},
+                url:"/cameraCalibration/target_insert",
+                dataType: 'json',
+                success:function(res){
+                    document.getElementById("numT_inserted").value = res["numT_inserted"];
+                },
+                error: function (res) {
+                    alert('失败！')
+                }
+            });
         }
     </script>
     {% endblock %}

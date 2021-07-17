@@ -835,6 +835,155 @@ def constructMeasureField():
     return res
 
 
+@cameraCalibration.route('/updateList1/',methods=['POST','GET'])
+def  updateList1():
+    #这里需要加检索筒端类型文件，把检索结果返回到字典里
+    result = dict()
+    flag = request.args.get('mydata')
+    option = ""
+    if flag=="A" or flag=="cali_A":
+        option = "A_left"
+    else:
+        option = "B_left"
+    type_path = os.path.dirname(os.path.realpath(__file__)).replace("cameraCalibration","static\\res_pictures\\"+option)
+    type_list_f = os.listdir(type_path)
+    type_list = list()
+    for file in type_list_f:
+        if os.path.splitext(file)[1] == '.jpg':
+            type_list.append(file)
+    for i in range(1,len(type_list)+1):
+        result[i] = type_list[i-1]
+    return result
+
+@cameraCalibration.route('/selectType/',methods=['POST','GET'])
+def  selectType():
+    type = request.args.get('mydata')
 
 
+    print(type)
+    return  str(1)
 
+@cameraCalibration.route('/hole_insert/',methods=['POST','GET'])
+def  hole_insert():
+    # hole录入顺序：
+    # 靶标最近左边的孔开始，顺时针
+    # target录入顺序：
+    # 先法兰上的一个，之后PO、PH、PW
+    result = dict()
+    filename = request.args.get('filename')
+    HoleX = request.args.get('HoleX')
+    HoleY = request.args.get('HoleY')
+    HoleZ = request.args.get('HoleZ')
+    time = filename[:-9]
+    filename = filename[:-9]+".xml"
+    dirPath = os.path.dirname(os.path.realpath(__file__)).replace("cameraCalibration",
+                                                               "static\\res_pictures\\result\\restruction\\")
+    filelist = os.listdir(dirPath)
+    if filename in filelist:
+        ##有这个文件的情况
+        p_doc = minidom.parse(dirPath+filename)
+        root = p_doc.documentElement
+        hole = root.getElementsByTagName("hole")[0]
+        n = len(hole.childNodes)
+        point = p_doc.createElement("point"+str(n))
+        X = p_doc.createElement("X")
+        X.appendChild(p_doc.createTextNode(HoleX))
+        point.appendChild(X)
+        Y = p_doc.createElement("Y")
+        Y.appendChild(p_doc.createTextNode(HoleY))
+        point.appendChild(Y)
+        Z = p_doc.createElement("Z")
+        Z.appendChild(p_doc.createTextNode(HoleZ))
+        point.appendChild(Z)
+        hole.appendChild(point)
+        result["numH_inserted"] = n+1
+    else:
+        p_doc = minidom.Document()
+        root = p_doc.createElement('points_info')
+        timeNode = p_doc.createElement("time")
+        timeNode.appendChild(p_doc.createTextNode(time))
+        root.appendChild(timeNode)
+        p_doc.appendChild(root)
+        hole = p_doc.createElement('hole')
+        target = p_doc.createElement('target')
+        root.appendChild(hole)
+        root.appendChild(target)
+        point = p_doc.createElement("point0")
+        X = p_doc.createElement("X")
+        X.appendChild(p_doc.createTextNode(HoleX))
+        point.appendChild(X)
+        Y = p_doc.createElement("Y")
+        Y.appendChild(p_doc.createTextNode(HoleY))
+        point.appendChild(Y)
+        Z = p_doc.createElement("Z")
+        Z.appendChild(p_doc.createTextNode(HoleZ))
+        point.appendChild(Z)
+        hole.appendChild(point)
+        result["numH_inserted"] = 1
+
+    with open(dirPath+filename, 'w') as fp:
+        p_doc.writexml(fp)
+    return result
+
+
+@cameraCalibration.route('/target_insert/',methods=['POST','GET'])
+def  target_insert():
+    # hole录入顺序：
+    # 靶标最近左边的孔开始，顺时针
+    # target录入顺序：
+    # 先法兰上的一个，之后PO、PH、PW
+    result = dict()
+    filename = request.args.get('filename')
+    TargetX = request.args.get('TargetX')
+    TargetY = request.args.get('TargetY')
+    TargetZ = request.args.get('TargetZ')
+    time = filename[:-9]
+    filename = filename[:-9]+".xml"
+    dirPath = os.path.dirname(os.path.realpath(__file__)).replace("cameraCalibration",
+                                                               "static\\res_pictures\\result\\restruction\\")
+    filelist = os.listdir(dirPath)
+    if filename in filelist:
+        ##有这个文件的情况
+        p_doc = minidom.parse(dirPath+filename)
+        root = p_doc.documentElement
+        target = root.getElementsByTagName("target")[0]
+        n = len(target.childNodes)
+        point = p_doc.createElement("point"+str(n))
+        X = p_doc.createElement("X")
+        X.appendChild(p_doc.createTextNode(TargetX))
+        point.appendChild(X)
+        Y = p_doc.createElement("Y")
+        Y.appendChild(p_doc.createTextNode(TargetY))
+        point.appendChild(Y)
+        Z = p_doc.createElement("Z")
+        Z.appendChild(p_doc.createTextNode(TargetZ))
+        point.appendChild(Z)
+        target.appendChild(point)
+        result["numT_inserted"] = n+1
+    else:
+        p_doc = minidom.Document()
+        root = p_doc.createElement('points_info')
+        timeNode = p_doc.createElement("time")
+        timeNode.appendChild(p_doc.createTextNode(time))
+        root.appendChild(timeNode)
+        p_doc.appendChild(root)
+        hole = p_doc.createElement('hole')
+        target = p_doc.createElement('target')
+        root.appendChild(hole)
+        root.appendChild(target)
+        point = p_doc.createElement("point0")
+        X = p_doc.createElement("X")
+        X.appendChild(p_doc.createTextNode(TargetX))
+        point.appendChild(X)
+        Y = p_doc.createElement("Y")
+        Y.appendChild(p_doc.createTextNode(TargetY))
+        point.appendChild(Y)
+        Z = p_doc.createElement("Z")
+        Z.appendChild(p_doc.createTextNode(TargetZ))
+        point.appendChild(Z)
+        target.appendChild(point)
+        result["numT_inserted"] = 1
+
+    with open(dirPath+filename, 'w') as fp:
+        p_doc.writexml(fp)
+    return result
